@@ -27,6 +27,7 @@ static std::string get_mime_type(const std::string& path) {
     if (ends_with(path, ".json")) return "application/json";
     if (ends_with(path, ".png")) return "image/png";
     if (ends_with(path, ".jpg") || ends_with(path, ".jpeg")) return "image/jpeg";
+    if (ends_with(path, ".pdf")) return "application/pdf";
     if (ends_with(path, ".gif")) return "image/gif";
     if (ends_with(path, ".svg")) return "image/svg+xml";
     if (ends_with(path, ".ico")) return "image/x-icon";
