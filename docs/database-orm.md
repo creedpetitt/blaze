@@ -174,3 +174,53 @@ app.post("/create-order", [](Database& db, Body<Order> order) -> Async<void> {
     });
 });
 ```
+
+---
+
+## 6. Handling Relationships
+
+Blaze is intentionally designed as a **Micro-ORM**. It maps plain-old-data (POD) structs directly to tables without the heavy, hidden abstractions of traditional ORMs (like lazy-loading proxies or hidden `JOIN` generations). 
+
+Because Blaze is fully asynchronous, magic relationships (e.g., `user.posts`) would either block the thread or require hidden database connections inside your models. Instead, Blaze encourages explicit, high-performance data fetching.
+
+### Approach 1: Explicit Queries (Recommended)
+The cleanest way to handle relationships (One-to-Many, Belongs-To) is by injecting the repositories you need and fetching the data explicitly.
+
+```cpp
+app.get("/users/:id/profile", [](Path<int> id, Repository<User> users, Repository<Post> posts) -> Async<Json> {
+    // 1. Fetch User (Throws 404 if missing)
+    User user = co_await users.find(id);
+    
+    // 2. Fetch related Posts using the fluent builder
+    std::vector<Post> user_posts = co_await posts.query()
+        .where("user_id", "=", id)
+        .order_by("created_at", "DESC")
+        .all();
+    
+    // 3. Combine into a JSON response
+    Json response = user;
+    response["posts"] = user_posts;
+    
+    co_return response;
+});
+```
+
+### Approach 2: Raw SQL for Complex JOINs
+If you need to fetch data from multiple tables at once for performance, bypass the Repository and use the `Database` service to write optimized `JOIN` statements. The raw results can be converted directly to JSON.
+
+```cpp
+app.get("/feed", [](Database& db) -> Async<Json> {
+    // Write the exact, optimized SQL you want
+    auto results = co_await db.query(R"(
+        SELECT users.name, posts.title, posts.body 
+        FROM users 
+        JOIN posts ON users.id = posts.user_id 
+        WHERE posts.published = true
+        ORDER BY posts.created_at DESC 
+        LIMIT 10
+    )");
+    
+    // Returns a JSON array of objects automatically!
+    co_return Json(results);
+});
+```

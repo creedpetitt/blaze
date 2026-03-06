@@ -71,6 +71,7 @@ curl -fsSL https://raw.githubusercontent.com/Creed-Petitt/blaze/main/install.sh 
 ### Project Setup
 - **[Getting Started](docs/getting-started.md)**: Installation and project setup.
 - **[CLI Reference](docs/cli.md)**: Complete guide to all Blaze CLI commands.
+- **[Configuration](docs/configuration.md)**: The App Builder API, logging, and environment variables.
 - **[Architecture & Design](docs/architecture.md)**: Deep dive into the framework's core engine and design patterns.
 - **[Testing & Security](docs/testing.md)**: CI/CD, sanitizers, and performance benchmarking.
 
@@ -82,6 +83,7 @@ curl -fsSL https://raw.githubusercontent.com/Creed-Petitt/blaze/main/install.sh 
 - **[File Uploads](docs/file-uploads.md)**: Multipart forms and client-side uploads.
 - **[Middleware & Security](docs/middleware.md)**: JWT Auth, CORS, and the middleware chain.
 - **[WebSockets](docs/websockets.md)**: Real-time broadcasting and background tasks.
+- **[Core Utilities](docs/utilities.md)**: Zero-allocation tools for strings, JWTs, and resilience.
 
 ## Requirements
 
