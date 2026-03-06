@@ -5,7 +5,14 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(framework)
 
-option(BLAZE_BUILD_EXAMPLES "Build the educational examples" ON)
+# Only default to building examples if building the framework directly
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    set(DEFAULT_BUILD_EXAMPLES ON)
+else()
+    set(DEFAULT_BUILD_EXAMPLES OFF)
+endif()
+
+option(BLAZE_BUILD_EXAMPLES "Build the educational examples" ${DEFAULT_BUILD_EXAMPLES})
 if(BLAZE_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
