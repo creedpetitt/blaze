@@ -11,7 +11,9 @@ message(STATUS "Blaze: Building in ${CMAKE_BUILD_TYPE} Mode")
 include(FetchContent)
 
 # Use Global Blaze Cache (Instant Builds)
-set(FETCHCONTENT_BASE_DIR "$ENV{HOME}/.blaze/cache")
+# Partitioned by generator and build type to prevent conflicts between CLI (Makefiles) and IDEs (Ninja)
+string(REPLACE " " "_" BLAZE_SAFE_GENERATOR "${CMAKE_GENERATOR}")
+set(FETCHCONTENT_BASE_DIR "$ENV{HOME}/.blaze/cache/${BLAZE_SAFE_GENERATOR}/${CMAKE_BUILD_TYPE}")
 
 # Download Blaze Framework
 FetchContent_Declare(
