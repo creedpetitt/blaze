@@ -28,6 +28,8 @@ add_executable(blaze_tests
     test_multipart.cpp
     test_request_di.cpp
     test_snake_case.cpp
+    test_validation.cpp
+    test_schema.cpp
 )
 
 
