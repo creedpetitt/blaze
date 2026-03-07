@@ -16,3 +16,8 @@ logs/
 Thumbs.db
 /json.hpp
 *.pem
+
+/blaze-cypto/
+/cli/blaze-linux-amd64
+/cli/blaze-darwin-arm64
+/cli/blaze-darwin-amd64
