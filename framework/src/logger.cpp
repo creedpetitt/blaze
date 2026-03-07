@@ -66,10 +66,15 @@ void Logger::process_queue() {
             } else {
                 std::cout << out_str;
             }
-        } else if (file_stream_.is_open()) {
-            file_stream_ << out_str;
-            if (msg.find("ERROR") != std::string::npos) {
-                file_stream_.flush();
+        } else if (!log_path_.empty()) {
+            if (!file_stream_.is_open()) {
+                file_stream_.open(log_path_, std::ios::out | std::ios::app);
+            }
+            if (file_stream_.is_open()) {
+                file_stream_ << out_str;
+                if (msg.find("ERROR") != std::string::npos) {
+                    file_stream_.flush();
+                }
             }
         }
     }
@@ -87,18 +92,23 @@ void Logger::configure(const std::string& path) {
 
     if (path == "stdout" || path.empty()) {
         use_stdout_ = true;
+        log_path_ = "";
         return;
     }
 
     use_stdout_ = false;
     
+    // Close existing if the path changed
+    if (log_path_ != path && file_stream_.is_open()) {
+        file_stream_.close();
+    }
+    
+    log_path_ = path;
+
     std::filesystem::path p(path);
     if (p.has_parent_path()) {
         std::filesystem::create_directories(p.parent_path());
     }
-
-    if (file_stream_.is_open()) file_stream_.close();
-    file_stream_.open(path, std::ios::out | std::ios::app);
 }
 
 void Logger::log(LogLevel level, std::string_view message) {

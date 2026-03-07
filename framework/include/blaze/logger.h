@@ -29,6 +29,7 @@ private:
     
     // Config Mutex (protects file_stream_, use_stdout_, enabled_, level_)
     std::mutex config_mutex_;
+    std::string log_path_;
 
     // Async Queue
     std::queue<std::string> queue_;
