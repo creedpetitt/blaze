@@ -224,3 +224,41 @@ app.get("/feed", [](Database& db) -> Async<Json> {
     co_return Json(results);
 });
 ```
+
+---
+
+## 7. Schema Generation
+
+Blaze can automatically generate the SQL required to create your tables by inspecting your `BLAZE_MODEL` structs. This is extremely useful for automating migrations or setting up fresh databases in integration tests.
+
+### Usage
+Include `<blaze/util/schema.h>` to access the generator.
+
+```cpp
+#include <blaze/util/schema.h>
+
+struct User {
+    int id;
+    std::string email;
+    bool active;
+};
+BLAZE_MODEL(User, id, email, active)
+
+// Generate the SQL string
+std::string sql = blaze::schema::generate_create_table<User>();
+
+/*
+Result:
+CREATE TABLE IF NOT EXISTS "users" (
+    "id" INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    "email" TEXT,
+    "active" BOOLEAN
+);
+*/
+```
+
+### Conventions
+*   **Table Names**: Automatically pluralized and converted to `snake_case`.
+*   **Primary Keys**: The first field in the struct is assumed to be the Primary Key.
+*   **Identity**: Integer primary keys are automatically marked as `GENERATED ALWAYS AS IDENTITY` (PostgreSQL standard).
+*   **Type Mapping**: C++ types (`int`, `std::string`, `bool`, `double`) are mapped to their closest SQL equivalents.

@@ -226,6 +226,19 @@ blaze run --watch
 
 This command will compile your code, start the server, and automatically reload it whenever you save a change.
 
+---
+
+## IDE Support
+
+Blaze is designed to work seamlessly with modern C++ IDEs like **CLion**, **VS Code**, and **Visual Studio**. 
+
+Thanks to our partitioned global cache, you can switch between the `blaze` CLI and your IDE's "Run" button without any CMake cache conflicts. 
+
+**Pro-Tips for IDEs:**
+1.  **Code Completion**: Blaze's heavy use of reflection and headers ensures that "Go to Definition" and Parameter Hints work perfectly.
+2.  **Debugging**: You can set breakpoints inside your route handlers and step directly into the Blaze framework source code.
+3.  **Formatting**: We recommend using the provided `.clang-format` file in the project root to keep your code consistent with the framework.
+
 > **Tip:** For advanced commands like Docker integration (`blaze docker`) or Code Generators (`blaze generate`), check out the **[CLI Reference](cli.md)**.
 
 ---

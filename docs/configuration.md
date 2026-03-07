@@ -59,19 +59,27 @@ app.log_level(LogLevel::DEBUG);
 
 ### Log Targets
 
-By default, Blaze logs to `stdout`. In production, you should redirect this to a file or a specialized device.
+By default, Blaze logs to `stdout`. In production, you can redirect this to a file.
 
 ```cpp
 // Log to a file
-app.log_to("logs/api.log");
-
-// Disable logging (useful for high-speed benchmarks)
-app.log_to("/dev/null");
+app.log_to("server.log");
 ```
+
+> **Note on Lazy Logging**: To keep your workspace clean, Blaze uses "Lazy Logging." The log file will not be physically created on your disk until the first log message is actually generated. If no traffic hits your server, no file will appear.
 
 ---
 
-## Environment Variables
+## Lifecycle & Shutdown
+
+Blaze ensures that your application shuts down cleanly without dropping in-flight requests.
+
+| Method | Default | Description |
+| :--- | :--- | :--- |
+| `.shutdown_timeout(sec)`| `30` | The maximum time to wait for active requests to finish before force-killing the server. |
+
+**Optimized Behavior**: 
+As of v1.1.0, the shutdown process is highly optimized. If your server has zero active connections, it will shut down **instantly** upon receiving a stop signal. The timeout only acts as a safety net for hung requests.
 
 While the fluent API is great for code-based config, sensitive data like API keys should stay in `.env` files.
 

@@ -113,24 +113,41 @@ Choosing the right tool for JSON handling is key to balancing performance and fl
 
 ## 3. Automatic Validation
 
-If your model has a `validate()` method, Blaze will automatically call it before your handler runs.
+If your model has a `validate()` method, Blaze will automatically call it before your handler runs. To make this easier, Blaze provides a set of declarative helpers in the `blaze::v` namespace.
 
 ```cpp
+#include <blaze/util/validation.h>
+
 struct Signup {
     std::string email;
+    std::string password;
+    int age;
+
     void validate() const {
-        if (email.find('@') == std::string::npos) {
-            throw BadRequest("Invalid email address");
-        }
+        v::required(email, "Email");
+        v::email(email);
+        v::min_len(password, 8, "Password");
+        v::range(age, 18, 120, "Age");
     }
 };
-BLAZE_MODEL(Signup, email)
+BLAZE_MODEL(Signup, email, password, age)
 
 app.post("/signup", [](Body<Signup> s) -> Async<void> {
-    // If we get here, the email is GUARANTEED to be valid!
+    // If we get here, the data is GUARANTEED to be valid!
     co_return;
 });
 ```
+
+### Available Helpers (`blaze::v`)
+| Helper | Description |
+| :--- | :--- |
+| `v::required(val, name)` | Throws if string is empty. |
+| `v::email(val, name)` | Validates email format via regex. |
+| `v::min_len(val, min, name)` | Validates minimum string length. |
+| `v::max_len(val, max, name)` | Validates maximum string length. |
+| `v::range(val, min, max, name)` | Validates numeric range (inclusive). |
+| `v::matches(val, regex, name)` | Validates against a custom `std::regex`. |
+| `v::is_true(val, name)` | Throws if boolean is false (useful for TOS). |
 
 ---
 
